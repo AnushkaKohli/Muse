@@ -2,24 +2,53 @@ import { Hono } from "hono";
 // to deploy to an edge runtime like Cloudflare Workers, you need to use the edge version of Prisma
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { decode, sign, verify } from "hono/jwt";
+import { sign, verify } from "hono/jwt";
 
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
   };
+  Variables: {
+    userId: string;
+    prisma: object;
+  };
 }>();
+
+// Middleware to set the PrismaClient instance and the userId in the context
+app.use("*", async (c, next) => {
+  // Creating a new instance of the PrismaClient. Additionally, it is extending the PrismaClient instance with the `withAccelerate` extension, which is used to optimize and accelerate database queries and operations.
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  c.set("prisma", prisma);
+  await next();
+});
+
+app.use("/api/v1/blog/*", async (c, next) => {
+  const jwt = c.req.header("Authorization");
+  if (!jwt) {
+    c.status(401);
+    return c.json({ message: "Unauthorized" });
+  }
+  const token = jwt;
+  // const token = jwt.split(" ")[1];
+  const payload = await verify(token, c.env?.JWT_SECRET);
+  if (!payload) {
+    c.status(401);
+    return c.json({ message: "Unauthorized" });
+  }
+  c.set("userId", payload.id as string);
+
+  await next();
+});
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
 });
 
 app.post("/api/v1/user/signup", async (c) => {
-  // Creating a new instance of the PrismaClient. Additionally, it is extending the PrismaClient instance with the `withAccelerate` extension, which is used to optimize and accelerate database queries and operations.
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env?.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = c.get("prisma") as PrismaClient;
 
   const body = await c.req.json();
 
@@ -62,9 +91,7 @@ app.post("/api/v1/user/signup", async (c) => {
 });
 
 app.post("/api/v1/user/signin", async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env?.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const prisma = c.get("prisma") as PrismaClient;
 
   const body = await c.req.json();
 
@@ -88,7 +115,6 @@ app.post("/api/v1/user/signin", async (c) => {
       },
       c.env?.JWT_SECRET
     );
-
     return c.json({ jwt });
   } catch (error) {
     c.status(411);
@@ -98,7 +124,8 @@ app.post("/api/v1/user/signin", async (c) => {
 });
 
 app.post("/api/v1/blog", (c) => {
-  return c.text("Blog route");
+  console.log("c.userId", c.get("userId"));
+  return c.text(`Blog route: post ${c.get("userId")}`);
 });
 
 app.put("/api/v1/blog", (c) => {

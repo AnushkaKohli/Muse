@@ -24,7 +24,7 @@ sign(
 ): Promise<string>;
 ```
 
-#### Example
+#### Example 1
 
 ```typescript
 import { sign } from 'hono/jwt'
@@ -36,6 +36,31 @@ const payload = {
 }
 const secret = 'mySecretKey'
 const token = await sign(payload, secret)
+```
+
+### `verify()`
+
+This function verifies a JWT token by decoding it and verifying the signature using the specified algorithm and secret.  It ensures the token hasn't been altered and checks validity only if you added Payload Validation.
+
+```typescript
+verify(
+  token: string,
+  secret: string,
+  alg?: 'HS256';
+
+): Promise<any>;
+```
+
+#### Example 2
+
+```typescript
+import { verify } from 'hono/jwt'
+
+const tokenToVerify = 'token'
+const secretKey = 'mySecretKey'
+
+const decodedPayload = await verify(tokenToVerify, secretKey)
+console.log(decodedPayload)
 ```
 
 To learn more: [Hono: JWT](https://hono.dev/docs/helpers/jwt)
