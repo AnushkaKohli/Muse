@@ -65,12 +65,22 @@ app.post("/api/v1/user/signup", async (c) => {
       return c.json({ message: "User already exists" });
     }
     console.log(findUser);
+    // Hash the password
+    const hashedPassword = await crypto.subtle.digest(
+      {
+        name: "SHA-256",
+      },
+      new TextEncoder().encode(body.password)
+    );
+    const hashedPasswordString = Array.from(new Uint8Array(hashedPassword))
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
     // Create a new user
     const user = await prisma.user.create({
       data: {
         email: body.email,
         name: body.name,
-        password: body.password,
+        password: hashedPasswordString,
       },
     });
     // Create a JWT token
@@ -95,12 +105,30 @@ app.post("/api/v1/user/signin", async (c) => {
 
   const body = await c.req.json();
 
+  const hashedPassword = await crypto.subtle.digest(
+    {
+      name: "SHA-256",
+    },
+    new TextEncoder().encode(body.password)
+  );
+  const hashedPasswordString = Array.from(new Uint8Array(hashedPassword))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+
   try {
     const user = await prisma.user.findUnique({
       where: {
         email: body.email,
+        password: hashedPasswordString,
       },
     });
+
+    if (user?.password !== hashedPasswordString) {
+      c.status(403);
+      return c.json({
+        message: "Invalid email or password",
+      });
+    }
 
     if (!user) {
       c.status(403);
