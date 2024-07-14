@@ -1,0 +1,20 @@
+{
+  "name": "@muse/common-app",
+  "version": "1.0.0",
+  "description": "Zod schemas for input validation and TypeScript types inferred from these schemas",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [],
+  "author": "Anushka Kohli",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.5.3",
+    "zod": "^3.23.8"
+  }
+}

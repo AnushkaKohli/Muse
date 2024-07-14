@@ -1,6 +1,6 @@
 # Muse Blogging Website Backend
 
-The Muse blogging website allows users to create and read blogs. 
+The Muse blogging website allows users to create and read blogs.
 
 ## Project Overview
 
@@ -276,4 +276,3 @@ console.log(decodedPayload)
 ```
 
 To learn more: [Hono: JWT](https://hono.dev/docs/helpers/jwt)
-
