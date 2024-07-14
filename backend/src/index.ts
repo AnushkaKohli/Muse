@@ -13,7 +13,7 @@ app.route("/api/v1/user", userRouter);
 app.route("/api/v1/blog", blogRouter);
 
 app.get("/", (c) => {
-  return c.text("Hello Hono!");
+  return c.text("Welcome to Muse: A Blogging Platform");
 });
 
 export default app;
