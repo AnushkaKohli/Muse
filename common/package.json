@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/AnushkaKohli/Muse/tree/main/common"
   },
   "keywords": [],
   "author": "Anushka Kohli",
