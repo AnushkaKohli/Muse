@@ -1,6 +1,10 @@
 import { Hono } from "hono";
 import authMiddleware from "../middleware/authMiddleware";
 import prismaMiddleware from "../middleware/prismaMiddleware";
+import {
+  createBlogInput,
+  updateBlogInput,
+} from "@anushka_kohli/muse-common-app";
 
 type prismaObject = {
   blogPost: {
@@ -29,11 +33,16 @@ blogRouter.post("/", async (c) => {
   try {
     const userId = c.get("userId");
     const prisma = c.get("prisma") as prismaObject;
-    const { title, content } = await c.req.json();
+    const { body } = await c.req.json();
+    const { success } = createBlogInput.safeParse(body);
+    if (!success) {
+      c.status(400);
+      return c.json({ error: "Create Blog Error: Invalid input" });
+    }
     const post = await prisma.blogPost.create({
       data: {
-        title,
-        content,
+        title: body.title,
+        content: body.content,
         authorId: userId,
       },
     });
@@ -50,6 +59,10 @@ blogRouter.put("/", async (c) => {
     const userId = c.get("userId");
     const prisma = c.get("prisma") as prismaObject;
     const { id, title, content } = await c.req.json();
+    const { success } = updateBlogInput.safeParse({ title, content });
+    if (!success) {
+      return c.json({ error: "Update Blog Error: Invalid input" });
+    }
     if (!id) {
       return c.json({ error: "id is required" });
     }

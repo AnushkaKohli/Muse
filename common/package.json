@@ -1,5 +1,5 @@
 {
-  "name": "@muse/common-app",
+  "name": "@anushka_kohli/muse-common-app",
   "version": "1.0.0",
   "description": "Zod schemas for input validation and TypeScript types inferred from these schemas",
   "main": "dist/index.js",

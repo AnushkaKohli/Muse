@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { sign } from "hono/jwt";
 import prismaMiddleware from "../middleware/prismaMiddleware";
+import { SigninInput, signupInput } from "@anushka_kohli/muse-common-app";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -21,6 +22,24 @@ userRouter.post("/signup", async (c) => {
 
   const body = await c.req.json();
 
+  // Hash the password
+  const hashedPassword = await crypto.subtle.digest(
+    {
+      name: "SHA-256",
+    },
+    new TextEncoder().encode(body.password)
+  );
+  const hashedPasswordString = Array.from(new Uint8Array(hashedPassword))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+
+  const { success } = signupInput.safeParse(body);
+
+  if (!success) {
+    c.status(400);
+    return c.json({ error: "Signup error: Invalid input" });
+  }
+
   try {
     // Check if the user already exists
     const findUser = await prisma.user.findUnique({
@@ -34,16 +53,7 @@ userRouter.post("/signup", async (c) => {
       return c.json({ message: "User already exists" });
     }
     console.log(findUser);
-    // Hash the password
-    const hashedPassword = await crypto.subtle.digest(
-      {
-        name: "SHA-256",
-      },
-      new TextEncoder().encode(body.password)
-    );
-    const hashedPasswordString = Array.from(new Uint8Array(hashedPassword))
-      .map((byte) => byte.toString(16).padStart(2, "0"))
-      .join("");
+
     // Create a new user
     const user = await prisma.user.create({
       data: {
@@ -83,6 +93,12 @@ userRouter.post("/signin", async (c) => {
   const hashedPasswordString = Array.from(new Uint8Array(hashedPassword))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
+
+  const { success } = SigninInput.safeParse(body);
+  if (!success) {
+    c.status(400);
+    return c.json({ error: "Signin Error: Invalid input" });
+  }
 
   try {
     const user = await prisma.user.findUnique({
