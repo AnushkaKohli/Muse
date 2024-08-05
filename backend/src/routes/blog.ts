@@ -11,7 +11,8 @@ type prismaObject = {
     create: (data: object) => object;
     update: (data: object) => object;
     findUnique: (data: object) => object;
-    findMany: () => [object];
+    findMany: (data: object) => [object];
+    delete: (data: object) => object;
   };
   user: object;
 };
@@ -33,7 +34,7 @@ blogRouter.post("/", async (c) => {
   try {
     const userId = c.get("userId");
     const prisma = c.get("prisma") as prismaObject;
-    const { body } = await c.req.json();
+    const body = await c.req.json();
     const { success } = createBlogInput.safeParse(body);
     if (!success) {
       c.status(400);
@@ -84,12 +85,51 @@ blogRouter.put("/", async (c) => {
 blogRouter.get("/all", async (c) => {
   try {
     const prisma = c.get("prisma") as prismaObject;
-    const blogPosts = await prisma.blogPost.findMany();
+    const blogPosts = await prisma.blogPost.findMany({
+      where: {
+        published: true,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        published: true,
+        authorId: true,
+        postedOn: true,
+        author: {
+          select: { name: true },
+        },
+      },
+    });
     return c.json({ blogPosts });
   } catch (error) {
     console.log("Error in blogRouter.get", error);
     c.status(403);
     return c.json({ error: "Internal Server Error" });
+  }
+});
+
+blogRouter.get("/userBlogs", async (c) => {
+  const prisma = c.get("prisma") as prismaObject;
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: c.get("userId"),
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        posts: true,
+      },
+    });
+    return c.json({ user });
+  } catch (error) {
+    console.log("Error blog/userBlogs: ", error);
+    c.status(403);
+    c.json({
+      message: "Internal Server Error",
+    });
   }
 });
 
@@ -105,5 +145,28 @@ blogRouter.get("/:id", async (c) => {
     console.log("Error in blogRouter.get", error);
     c.status(403);
     return c.json({ error: "Internal Server Error" });
+  }
+});
+
+blogRouter.delete("/:id", async (c) => {
+  const id = c.req.param("id");
+  const prisma = c.get("prisma") as prismaObject;
+  try {
+    const deletedPost = await prisma.blogPost.delete({
+      where: {
+        id,
+        authorId: c.get("userId"),
+      },
+    });
+    console.log(deletedPost);
+    return c.json({
+      message: "Post deleted successfully",
+    });
+  } catch (error) {
+    console.log("Error /blog/:id: ", error);
+    c.status(403);
+    return c.json({
+      message: "Internal Server Error",
+    });
   }
 });

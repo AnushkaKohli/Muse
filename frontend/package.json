@@ -10,10 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anushka_kohli/muse-common-app": "^1.0.0",
+    "@anushka_kohli/muse-common-app": "^1.0.1",
+    "axios": "^1.7.3",
+    "dompurify": "^3.1.6",
+    "marked": "^13.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.0",
+    "sonner": "^1.5.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

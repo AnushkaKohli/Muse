@@ -21,7 +21,11 @@ The `signupInput` schema validates the data for user signup.
 
 ### Signin Input
 
-The `SigninInput` schema validates the data for user signin.
+The `signinInput` schema validates the data for user signin.
+
+### UpdateUserDetails Input
+
+The `updateUserDetailsInput` schema validates the data for updating user details.
 
 ### Create Blog Input
 

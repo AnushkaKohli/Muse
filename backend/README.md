@@ -215,9 +215,11 @@ The Prisma middleware sets up the Prisma client for database access.
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
-<!-- ## License -->
+## To Migrate Prisma Databases
 
-<!-- This project is licensed under the MIT License. -->
+1. `npx prisma migrate dev --name init_schema`
+
+2. `npx prisma generate --no-engine`
 
 ---
 
