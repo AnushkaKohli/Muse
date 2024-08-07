@@ -17,7 +17,7 @@ const Navbar = ({ write = true }: { write: boolean }) => {
                     className="flex "
                     to={"/blogs"}>
                     <div className="flex flex-col justify-center">
-                        <img src="logo.svg" alt="logo" />
+                        <img src="/logo.svg" alt="logo" />
                     </div>
                 </Link>
                 <div className="flex items-center gap-10">
