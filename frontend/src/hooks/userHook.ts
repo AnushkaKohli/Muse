@@ -27,30 +27,7 @@ export function useUserData(id: string) {
   };
 }
 
-export function useUserBoth() {
-  const [loading, setLoading] = useState(true);
-  const [userData, setuserData] = useState<User>();
-
-  useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/api/v1/blog/both`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-      .then((response) => {
-        setuserData(response.data.user);
-        setLoading(false);
-      });
-  }, []);
-
-  return {
-    loading,
-    userData,
-  };
-}
-
-export function useUserDetails(token: string): any {
+export function useUserDetails(token: string) {
   if (!token) return null;
   const base64Url = token.split(".")[1];
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");

@@ -58,6 +58,7 @@ const Editor = ({ edit }: { edit: boolean }) => {
             toast.error(message, { duration: 2000, });
         }
     }
+
     return (
         <div>
             <Navbar write={false} />

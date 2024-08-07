@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { Blog } from "./types";
+import { Blog, User } from "./types";
 import { BACKEND_URL } from "../../config";
 
 export const useBlog = ({ id }: { id: string }) => {
@@ -49,3 +49,26 @@ export const useBlogs = () => {
     blogs,
   };
 };
+
+export function useUserBlogs() {
+  const [loading, setLoading] = useState(true);
+  const [userData, setuserData] = useState<User>();
+
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/api/v1/blog/userBlogs`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        setuserData(response.data.user);
+        setLoading(false);
+      });
+  }, []);
+
+  return {
+    loading,
+    userData,
+  };
+}
