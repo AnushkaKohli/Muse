@@ -4,6 +4,7 @@ import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Blogs from './pages/Blogs';
 import Settings from './pages/Settings';
+import Editor from './pages/Editor';
 
 function App () {
   const isLoggedIn = localStorage.token !== undefined && localStorage.token !== "";
@@ -22,9 +23,9 @@ function App () {
               <Route
                 path="/settings"
                 element={<Settings />} />
-              {/* <Route
-          path="/write"
-          element={<Editor edit={false} />} /> */}
+              <Route
+                path="/write"
+                element={<Editor edit={false} />} />
               {/* <Route
           path="/your-blogs"
           element={<UserBlogs />} /> */}

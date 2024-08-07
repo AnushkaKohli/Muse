@@ -40,7 +40,9 @@ const Auth = ({ type }: AuthProps) => {
                         ? "Login Successful"
                         : "Signup Successful";
                 toast.success(successMessage);
-                navigate('/'); // Redirect to the home page
+                setTimeout(() => {
+                    navigate("/"); // Redirect to the home page
+                }, 2000);
             }
         } catch (error: any) {
             console.warn(error);

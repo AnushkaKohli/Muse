@@ -44,6 +44,7 @@ blogRouter.post("/", async (c) => {
       data: {
         title: body.title,
         content: body.content,
+        published: body.published,
         authorId: userId,
       },
     });
@@ -59,7 +60,7 @@ blogRouter.put("/", async (c) => {
   try {
     const userId = c.get("userId");
     const prisma = c.get("prisma") as prismaObject;
-    const { id, title, content } = await c.req.json();
+    const { id, title, content, published } = await c.req.json();
     const { success } = updateBlogInput.safeParse({ title, content });
     if (!success) {
       return c.json({ error: "Update Blog Error: Invalid input" });
@@ -72,6 +73,7 @@ blogRouter.put("/", async (c) => {
       data: {
         title,
         content,
+        published,
       },
     });
     return c.json(post);
