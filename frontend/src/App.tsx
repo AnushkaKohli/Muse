@@ -14,53 +14,51 @@ function App () {
   return (
     <BrowserRouter>
       <Routes>
-        <>
-          {isLoggedIn &&
-            <>
-              <Route
-                path="/"
-                element={<Blogs />} />
-              <Route
-                path="/blogs"
-                element={<Blogs />} />
-              <Route
-                path="/settings"
-                element={<Settings />} />
-              <Route
-                path="/write"
-                element={<Editor edit={false} />} />
-              <Route
-                path="/your-blogs"
-                element={<UserBlogs />} />
-              {/* No logo */}
-              <Route
-                path="/edit/:id"
-                element={<Editor edit={true} />} />
-              <Route
-                path="/blog/:id"
-                element={<Blog />} />
-              <Route
-                path="/user/:id"
-                element={<User />} />
-              <Route
-                path="*"
-                element={<Navigate to="/blogs" />}
-              />
-            </>
-          }
-          {
-            !isLoggedIn && (
-              <Route
-                path="*"
-                element={<Navigate to="/signin" />}
-              />
-            )
-          }
+        {!isLoggedIn ? (
           <>
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/signin" element={<Signin />} />
+            <Route
+              path="/signup"
+              element={<Signup />} />
+            <Route
+              path="/signin"
+              element={<Signin />} />
+            <Route
+              path="*"
+              element={<Navigate to="/signin" />}
+            />
           </>
-        </>
+        ) : (
+          <>
+            <Route
+              path="/"
+              element={<Blogs />} />
+            <Route
+              path="/blogs"
+              element={<Blogs />} />
+            <Route
+              path="/settings"
+              element={<Settings />} />
+            <Route
+              path="/write"
+              element={<Editor edit={false} />} />
+            <Route
+              path="/your-blogs"
+              element={<UserBlogs />} />
+            <Route
+              path="/edit/:id"
+              element={<Editor edit={true} />} />
+            <Route
+              path="/blog/:id"
+              element={<Blog />} />
+            <Route
+              path="/user/:id"
+              element={<User />} />
+            <Route
+              path="*"
+              element={<Navigate to="/" />}
+            />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   )

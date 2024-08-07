@@ -6,7 +6,6 @@ import { Toaster, toast } from 'sonner'
 import { BACKEND_URL } from '../../../config';
 import AuthTitle from './AuthTitle';
 import LabelInput from './LabelInput';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthProps {
     type: "signup" | "signin";
@@ -14,22 +13,18 @@ interface AuthProps {
 
 const Auth = ({ type }: AuthProps) => {
     const [user, setUser] = useState<SignupType>({
+        name: "",
         email: "",
         password: "",
-        name: "",
     });
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     const handleClick = async () => {
         try {
-            setLoading(true);
             const res = await axios.post(
                 `${BACKEND_URL}/api/v1/user/${type === "signin" ? "signin" : "signup"
                 }`,
                 user
             );
-            setLoading(false);
 
             const jwt = res.data.jwt;
             localStorage.setItem("token", jwt);
@@ -41,8 +36,8 @@ const Auth = ({ type }: AuthProps) => {
                         : "Signup Successful";
                 toast.success(successMessage);
                 setTimeout(() => {
-                    navigate("/"); // Redirect to the home page
-                }, 2000);
+                    window.location.reload(); // Redirect to the home page
+                }, 1000);
             }
         } catch (error: any) {
             console.warn(error);
@@ -51,12 +46,31 @@ const Auth = ({ type }: AuthProps) => {
         }
     }
 
-    if (loading) {
-        return (
-            <div className='flex h-full items-center justify-center text-4xl'>
-                Loading...
-            </div>
-        )
+    const handleGuest = async () => {
+        try {
+            const res = await axios.post(
+                `${BACKEND_URL}/api/v1/user/signin`,
+                {
+                    email: "user1@gmail.com",
+                    password: "user123",
+                }
+            );
+
+            const jwt = res.data.jwt;
+            localStorage.setItem("token", jwt);
+
+            if (res.status === 200) {
+                const successMessage = "Login Successful";
+                toast.success(successMessage);
+                setTimeout(() => {
+                    window.location.reload(); // Redirect to the home page
+                }, 1000);
+            }
+        } catch (error: any) {
+            console.warn(error);
+            const errorMessage = error.response.data.message ?? "Invalid Input";
+            toast.warning(errorMessage, { duration: 2000, });
+        }
     }
 
     return (
@@ -96,12 +110,22 @@ const Auth = ({ type }: AuthProps) => {
                             password: e.target.value,
                         });
                     }} />
-                <button
-                    type="button"
-                    onClick={handleClick}
-                    className="mt-5 text-white  bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
-                    {type === "signin" ? "Sign In" : "Sign Up"}
-                </button>
+
+                <div className='flex flex-col w-full'>
+                    <button
+                        type="button"
+                        onClick={handleClick}
+                        className="mt-5 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                        {type === "signin" ? "Sign In" : "Sign Up"}
+                    </button>
+                    {/* Guest Credentials */}
+                    <button
+                        type="button"
+                        onClick={handleGuest}
+                        className="mt-5 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                        Get Guest Credentials
+                    </button>
+                </div>
             </div>
             <Toaster
                 closeButton

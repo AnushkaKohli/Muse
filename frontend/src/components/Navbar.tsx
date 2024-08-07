@@ -15,7 +15,7 @@ const Navbar = ({ write = true }: { write: boolean }) => {
             <div className="flex justify-between ">
                 <Link
                     className="flex "
-                    to={"/blogs"}>
+                    to={"/"}>
                     <div className="flex flex-col justify-center">
                         <img src="/logo.svg" alt="logo" />
                     </div>
