@@ -48,7 +48,7 @@ const Settings = () => {
                     duration: 2000,
                 });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.warn(error);
             const errorMessage =
                 error.response?.data?.message ?? "Invalid Inputs";
@@ -57,6 +57,7 @@ const Settings = () => {
             });
         }
     }
+
     return (
         <div>
             <Navbar write={true} />
