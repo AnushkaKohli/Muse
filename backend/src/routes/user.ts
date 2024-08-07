@@ -59,7 +59,6 @@ userRouter.post("/signup", async (c) => {
       c.status(411);
       return c.json({ message: "User already exists" });
     }
-    console.log(findUser);
 
     // Create a new user
     const user = await prisma.user.create({
@@ -184,7 +183,6 @@ userRouter.put("/update", async (c) => {
     });
   } catch (error) {
     const userId = c.get("userId");
-    console.log("UserId: ", userId);
     c.status(403);
     return c.json({
       message: "Internal Server Error",
@@ -212,8 +210,6 @@ userRouter.get("/:id", async (c) => {
         },
       },
     });
-
-    console.log(user);
 
     return c.json({
       user,

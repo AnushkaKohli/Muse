@@ -48,7 +48,7 @@ const Settings = () => {
                     duration: 2000,
                 });
             }
-        } catch (error: any) {
+        } catch (error) {
             console.warn(error);
             const errorMessage =
                 error.response?.data?.message ?? "Invalid Inputs";

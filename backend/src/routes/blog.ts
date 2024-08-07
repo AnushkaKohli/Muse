@@ -176,9 +176,9 @@ blogRouter.delete("/:id", async (c) => {
         authorId: c.get("userId"),
       },
     });
-    console.log(deletedPost);
     return c.json({
       message: "Post deleted successfully",
+      data: deletedPost,
     });
   } catch (error) {
     console.log("Error /blog/:id: ", error);
