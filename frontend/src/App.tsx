@@ -30,9 +30,9 @@ function App () {
               <Route
                 path="/your-blogs"
                 element={<UserBlogs />} />
-              {/* <Route
-          path="/edit/:id"
-          element={<Editor edit={true} />} /> */}
+              <Route
+                path="/edit/:id"
+                element={<Editor edit={true} />} />
               {/* <Route
           path="/blog/:id"
           element={<Blog />} /> */}

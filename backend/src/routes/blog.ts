@@ -61,12 +61,17 @@ blogRouter.put("/", async (c) => {
     const userId = c.get("userId");
     const prisma = c.get("prisma") as prismaObject;
     const { id, title, content, published } = await c.req.json();
-    const { success } = updateBlogInput.safeParse({ title, content });
+    const { success } = updateBlogInput.safeParse({
+      id,
+      title,
+      content,
+      published,
+    });
     if (!success) {
       return c.json({ error: "Update Blog Error: Invalid input" });
     }
     if (!id) {
-      return c.json({ error: "id is required" });
+      return c.json({ error: "ID is required" });
     }
     const post = await prisma.blogPost.update({
       where: { id, authorId: userId },

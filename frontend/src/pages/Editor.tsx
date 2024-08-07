@@ -35,6 +35,10 @@ const Editor = ({ edit }: { edit: boolean }) => {
         const url = edit ? `${BACKEND_URL}/api/v1/blog` : `${BACKEND_URL}/api/v1/blog`;
         const method = edit ? "put" : "post";
         try {
+            console.log("id: ", id);
+            console.log("title: ", title);
+            console.log("markdown: ", markdown);
+            console.log("published: ", published);
             const response = await axios[method](url,
                 { id, title, content: markdown, published },
                 {
@@ -43,6 +47,7 @@ const Editor = ({ edit }: { edit: boolean }) => {
                     }
                 }
             );
+            console.log("response: ", response);
             if (response.status === 200) {
                 const message = published
                     ? "Blog Published "
